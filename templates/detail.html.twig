@@ -1,0 +1,20 @@
+<div class="product-detail" data-product-ean="{{ product.EAN_Nummer }}">
+    <h3>{{ product.Product_name_short }}</h>
+
+    <div class="product-image">
+        <img src="{{ product.Primary_Image_link }}" alt="{{ product.Product_name_short }}">
+    </div>
+
+    <div class="product-attributes">
+        {% for key, value in product %}
+            {% if key != 'Primary_Image_link' and key != 'Product_name_short' %}
+                <p><strong>{{ key }}:</strong> {{ value }}</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+<br>
+<a href="{{ path('download_excel', { ean:product.EAN_Nummer }) }}">Download as Excel</a>
+<br>
+<button onclick="initCompare()">Compare to different product</button>
+<br>

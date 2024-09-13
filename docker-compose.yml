@@ -1,0 +1,54 @@
+#version: '3' # compose file schema version, obsolete
+services: # list of services
+  www: # web service
+    # image: php:apache # php calling apache, moved to Dockerfile
+    build: # Using Dockerfile in root dir
+      context: ./
+      dockerfile: build/Dockerfile
+    volumes: # sync between running container and local host
+      - "./:/var/www/html" # sync project web dir with container web dir
+    ports:
+      - 80:80
+      - 443:443 # for future ssl trafic
+    # command: > moved t Dockerfile
+      # bash -c "docker-php-ext-install mysqli && apache2-foreground"
+  db: # database service
+    image: mysql:latest # latest version of mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      # - MYSQL_ALLOW_EMPTY_PASSWORD=1 unsafe, allows root mysql user to log in without password
+    volumes:
+      - "./db_dev:/docker-entrypoint-initdb.d" #initial sql script, sync persistent sql with container
+  phpmyadmin: # db interface
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8001:80
+    environment:
+      - PMA-HOST=db #database service
+      - PMA-PORT=3306 #default
+###> doctrine/doctrine-bundle ###
+  database:
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    environment:
+      POSTGRES_DB: ${MYSQL_DATABASE}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${MYSQL_PASSWORD}
+      POSTGRES_USER:  ${MYSQL_USER}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/postgresql/data:rw
+###< doctrine/doctrine-bundle ###
+
+volumes:
+###> doctrine/doctrine-bundle ###
+  database_data:
+###< doctrine/doctrine-bundle ###

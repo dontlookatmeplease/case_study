@@ -1,0 +1,67 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Case study
+{% endblock %}
+
+{% block body %}
+    <h1>
+        {{ data }}
+    </h1>
+    <hr>
+    <form id="upload-form" data-upload-url="{{ path('upload_json') }}" enctype="multipart/form-data">
+        <input type="file" name="json_file" accept=".json">
+        <button type="button" onclick="uploadJson();">Upload JSON file</button>
+    </form>
+    <hr>
+    <div id="content">
+        {{ include('output.html.twig', {jsonData: ''}) }}
+    </div><br>
+    <hr>
+    <div id="products">
+        <h1>Product List</h1>
+
+        <div id="comparrison-header"  data-compare-url="{{ path('compare') }}" style="display: none;">
+            <h2>Choose product for comparrison</h2>
+            <button onclick="cancelCompare()">Cancel comparrison</button>
+        </div>
+        {% if products is iterable and products|length > 0 %}
+            <div class="table-container" data-product-detail-url="{{ path('product_detail') }}">
+                <table id="product-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>EAN</th>
+                            <th>Wattage</th>
+                            <th>Image</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                            <tr data-product-id="{{ product.EAN_Nummer }}">
+                                <td>{{ product.Product_name_short }}</td>
+                                <td>{{ product.EAN_Nummer }}</td>
+                                <td>{{ product.Wattage}}</td>
+                                <td>
+                                    {% if product.Primary_Image_link %}
+                                        <img src="{{ product.Primary_Image_link }}" alt="Product Image">
+                                    {% else %}
+                                        No image
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No products available.</p>
+        {% endif %}
+    </div>
+    <div id="product-detail" style="display: none;">
+        <h2>Product detail</h2>
+        <div id="detail-response"></div>
+        <hr>
+        <button onclick="showProductList()">Back to product list</button>
+    </div>
+{% endblock %}

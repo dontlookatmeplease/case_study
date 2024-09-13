@@ -1,0 +1,50 @@
+<h3>Product comparrison: {{ products[0].Product_name_short }} vs {{ products[1].Product_name_short }}</h3>
+
+<table id="compare-table" border="1" cellspacing="0" cellpadding="10">
+    <thead>
+        <tr>
+            <th>Atribute</th>
+            <th>Product 1</th>
+            <th>Product 2</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% set product1 = products[0] %}
+        {% set product2 = products[1] %}
+
+        <tr>
+            <td><strong>Product Name</strong></td>
+            <td>{{ product1.Product_name_short }}</td>
+            <td>{{ product2.Product_name_short }}</td>
+        </tr>
+
+        <tr>
+            <td><strong>Image</strong></td>
+            <td>
+                {% if product1.Primary_Image_link %}
+                    <img src="{{ product1.Primary_Image_link }}" alt="Product Image">
+                {% else %}
+                    No image
+                {% endif %}
+            </td>
+            <td>
+                {% if product2.Primary_Image_link %}
+                    <img src="{{ product2.Primary_Image_link }}" alt="Product Image">
+                {% else %}
+                    No image
+                {% endif %}
+            </td>
+        </tr>
+
+        {% for key, value in product1 %}
+            {% if key != 'Product_name_short' %}
+                <tr>
+                    <td><strong>{{ key }}</strong></td>
+                    <td>{{ value }}</td>
+                    <td>{{ attribute(product2, key) }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{{ path('download_pdf', { ean:product1.EAN_Nummer, compared:product2.EAN_Nummer }) }}">Download PDF</a>

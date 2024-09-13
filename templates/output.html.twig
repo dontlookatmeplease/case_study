@@ -1,0 +1,5 @@
+{% if jsonData %}
+    <pre>{{ jsonData|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+{% else %}
+    <p>No data to display</p>
+{% endif %}
