@@ -30,18 +30,22 @@ class ProductService
     }
 
     public function getProducts() {
-        $result = $this->mysqli->query('SELECT Product_name_short, EAN_Nummer, Wattage, Primary_Image_link FROM product_json');
+        try {
+            $result = $this->mysqli->query('SELECT Product_name_short, EAN_Nummer, Wattage, Primary_Image_link FROM product_json');
 
-        if ($result === false) {
-            return 'Query failed: ' . $this->mysqli->error;
+            if ($result === false) {
+                return 'Query failed: ' . $this->mysqli->error;
+            }
+
+            $products = $result->fetch_all(MYSQLI_ASSOC);
+
+            $result->free();
+            $this->mysqli->close();
+
+            return $products;
+        } catch (\Exception $e) {
+            return  $e->getMessage();
         }
-
-        $products = $result->fetch_all(MYSQLI_ASSOC);
-
-        $result->free();
-        $this->mysqli->close();
-
-        return $products;
     }
 
     public function getProductByEan($ean) {

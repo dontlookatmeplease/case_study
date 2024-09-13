@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -66,7 +67,7 @@ class DefaultController extends AbstractController
         #]);
 
         return $this->render('index.html.twig', [
-            'data' => 'Upload product file',
+            'data' => '$response',
             'products' => $this->productService->getProducts(),
             'jsonData' => $response
         ]);
@@ -128,9 +129,8 @@ class DefaultController extends AbstractController
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        return new Response($dompdf->output(), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
-        ]);
+        $pdfOutput = $dompdf->output();
+
+        $dompdf->downloadPdf('product_comparison.pdf');
     }
 }

@@ -22,7 +22,11 @@ th, td {
     padding: 8px;
     text-align: left;
     max-width: 30vw;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
+
 th {
     background-color: #f4f4f4;
 }

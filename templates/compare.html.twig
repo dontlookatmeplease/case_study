@@ -22,14 +22,14 @@
             <td><strong>Image</strong></td>
             <td>
                 {% if product1.Primary_Image_link %}
-                    <img src="{{ product1.Primary_Image_link }}" alt="Product Image">
+                    <img src="{{ product1.Primary_Image_link }}" alt="Product Image" style="max-width: 100px;">
                 {% else %}
                     No image
                 {% endif %}
             </td>
             <td>
                 {% if product2.Primary_Image_link %}
-                    <img src="{{ product2.Primary_Image_link }}" alt="Product Image">
+                    <img src="{{ product2.Primary_Image_link }}" alt="Product Image" style="max-width: 100px;">
                 {% else %}
                     No image
                 {% endif %}
